@@ -1,0 +1,26 @@
+
+
+<p-card header="Simple Card" [style]="{'width': '25rem', 'margin-top': '2rem'}" *ngIf="productData">
+   
+    <ng-template pTemplate="header">
+        <img [src]="productData.thumbnail" class="single-img" alt="main-img"/>
+
+    </ng-template>
+    <h3 class="product-title">{{productData.title}}</h3>
+    <p class="product-description">{{productData.description}}</p>
+    <span>{{productData.category}}</span>
+    <h4 class="price">
+        price: 
+        <span>{{productData.price | currency }}</span>
+       
+    </h4>
+    <div class="action">
+        <button class="add-btn" type="button"><i class="bi bi-cart me-2"></i>Add to cart</button>
+        <div class="mt-2 mb-2">
+            <button class="back-btn" (click)="goback()" > <i class="bi bi-arrow-left">Back</i> </button>
+        </div>
+    </div>
+   
+</p-card>
+
+

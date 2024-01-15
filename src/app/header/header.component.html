@@ -1,0 +1,44 @@
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+      <div class="container-fluid">
+       
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      
+  <div class="burger" [ngClass]="{ 'show': !isNavbarCollapsed }">
+        <div class="grid p-fluid">
+          
+        </div>
+        <div class="collapse navbar-collapse" id="navbarNav" >
+         
+          <ul class="navbar-nav " id="nav-ul">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="./"  routerLinkActive="active-link"  >Home</a>
+            </li>
+            
+            <li class="nav-item" >
+              
+      
+              <a class="nav-link" routerLink="./add-cart" routerLinkActive="active-link"><span class="total"><i class="bi bi-cart me-2"></i><p >{{ cartCountChange}}</p></span></a>
+            </li>
+          
+           
+            <li class="nav-item">
+              <a class="nav-link" routerLink="./contact" routerLinkActive="active-link">Contact</a>
+            </li>
+            <div class="p-inputgroup">
+                
+              <input class="search-input" type="text" pInputText placeholder="Search" (keyup)="getResult()" > 
+    
+          </div>
+          </ul>
+          
+            
+        
+        </div>
+  </div>
+      </div>
+    
+        
+      </nav>

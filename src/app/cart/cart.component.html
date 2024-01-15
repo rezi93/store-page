@@ -1,0 +1,30 @@
+
+
+<p-card  header="" [style]="{'width': '500px', 'height':'200px', 'margin-top': '2em', 'margin-left':'2rem','display':'grid','grid-template-columns':' auto auto '}" *ngFor="let item of cartItems">
+
+  <ng-template pTemplate="header">
+    
+    <img src="{{item.thumbnail}}" class="picture">
+  </ng-template>
+  <div class="cart-box">
+  
+  <span class="price-span">
+  <h3 class="prise-h3">{{item.price|currency}}</h3>
+     
+  <h5 class="card-title" >
+    <a >{{item.title}}</a>
+    
+
+  </h5>
+  </span>
+  <div class="btn-div">
+  <button class="by-btn" type="button">By-Now</button>
+  <button class="del-btn" type="button" (click)="removeitem(item)">Delete</button>
+  </div>
+</div>
+</p-card>
+
+<p>total:{{cartCount}}</p>
+
+  
+  
