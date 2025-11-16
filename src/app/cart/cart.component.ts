@@ -1,8 +1,5 @@
-import { Component, NgModule, OnInit,Input,Output,EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
-import { ICategory } from '../interface/product';
-import { IProduct } from '../interface/product';
-import { PruductService } from '../service/pruduct.service';
+import { Component, OnInit } from '@angular/core';
+import { CartService } from '../service/cart.service';
 
 @Component({
   selector: 'app-cart',
@@ -11,27 +8,46 @@ import { PruductService } from '../service/pruduct.service';
 })
 export class CartComponent implements OnInit {
 
-  cartItems: IProduct[] = []
-  cartCount: number = 0;
-  @Output() cartCountChange: EventEmitter<number> = new EventEmitter<number>();
-  
-  constructor(private Service: PruductService) {
+  cartItems: any[] = [];
+  totalPrice = 0;
 
-  }
+  constructor(private cart: CartService) {}
 
   ngOnInit(): void {
-    this.cartItems=this.Service.getItems();
-    this.cartCount = this.cartItems.length;
-    this.cartCountChange.emit(this.cartCount);
-   
     
+    this.cart.cartItems$.subscribe(items => {
+      this.cartItems = items.map(item => ({
+        ...item,
+        qty: item.quantity || 1
+      }));
+
+      this.calculateTotal();
+    });
   }
 
-  removeitem(item:any){
-    this.Service.removeItem(item)
+  increaseQty(item: any) {
+    item.qty++;
+    this.updateItem(item);
   }
-  
 
- 
+  decreaseQty(item: any) {
+    if (item.qty > 1) {
+      item.qty--;
+      this.updateItem(item);
+    }
+  }
 
+  updateItem(item: any) {
+    this.cart.updateQuantity(item.id, item.qty);
+    this.calculateTotal();
+  }
+
+  removeItem(item: any) {
+    this.cart.removeItem(item);
+  }
+
+  calculateTotal() {
+    this.totalPrice = this.cartItems
+      .reduce((sum, item) => sum + (item.price * item.qty), 0);
+  }
 }

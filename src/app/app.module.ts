@@ -12,9 +12,16 @@ import {InputTextModule} from 'primeng/inputtext';
 import {CardModule} from 'primeng/card';
 import { CartComponent } from './cart/cart.component';
 import {TabViewModule} from 'primeng/tabview';
-
+import { MenubarModule } from 'primeng/menubar';
 import {ButtonModule} from 'primeng/button';
 import { ContactComponent } from './contact/contact.component';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { BadgeModule } from 'primeng/badge';
+import { SidebarModule } from 'primeng/sidebar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
+
 
 @NgModule({
   declarations: [
@@ -34,10 +41,15 @@ import { ContactComponent } from './contact/contact.component';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    MenubarModule,
+    SidebarModule,
+    BadgeModule,
     InputTextModule,
-    CardModule,
-    TabViewModule,
-    ButtonModule
+    ButtonModule,
+    InputSwitchModule,
+    CardModule
+    
+ 
    
    
     

@@ -1,85 +1,79 @@
 import { Injectable } from '@angular/core';
-import { ICategory, IProduct, IBaseResponsive,IMenuItem } from '../interface/product';
+import { ICategory, IProduct, IBaseResponsive, IMenuItem } from '../interface/product';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, tap, concatMap, Subject,BehaviorSubject } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
-
-
-type NewType = Number;
+import { Observable, map, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PruductService {
- 
-  productID!: any
-  items: IProduct[] = []
-  product: IProduct[] = [];
-  productData: any
-  item=new BehaviorSubject<any>([])
-  category:IMenuItem[]=[]
 
-  constructor(private _http: HttpClient, private _route: ActivatedRoute) { }
+  private cartItems: IProduct[] = [];
+
+  
+  private cartCountSource = new BehaviorSubject<number>(0);
+  cartCount$ = this.cartCountSource.asObservable();
+
+  constructor(private _http: HttpClient) {}
+
+ 
   getProductList(): Observable<IProduct[]> {
-    return this._http.get<IBaseResponsive>('https://dummyjson.com/products').pipe(
-      tap(result => result),
-      map(data => data.products)
-    )
+    return this._http.get<IBaseResponsive>('https://dummyjson.com/products')
+      .pipe(map(res => res.products));
   }
 
 
-  getProduct(id: any): Observable<IProduct[]> {
-
-    return this._http.get<IProduct[]>('https://dummyjson.com/products/' + id + '/ ')
+  getProduct(id: number): Observable<IProduct> {
+    return this._http.get<IProduct>(`https://dummyjson.com/products/${id}`);
   }
 
-  searchProduct(category: any): Observable<IProduct[]> {
+  searchProduct(query: string): Observable<IProduct[]> {
     return this._http.get<IBaseResponsive>('https://dummyjson.com/products/search', {
-      params: { q: category }
-    }).pipe(map(data => data.products))
+      params: { q: query }
+    }).pipe(map(data => data.products));
   }
 
- 
-  
+ private allProducts: IProduct[] = [];
+private filteredProductsSource = new BehaviorSubject<IProduct[]>([]);
+filteredProducts$ = this.filteredProductsSource.asObservable();
+
+setProducts(products: IProduct[]) {
+    this.allProducts = products;
+    this.filteredProductsSource.next(products);
+}
+
+filterProducts(query: string) {
+    const filtered = this.allProducts.filter(p =>
+        p.title.toLowerCase().includes(query.toLowerCase())
+    );
+    this.filteredProductsSource.next(filtered);
+}
+
+  getProductByCat(category: string): Observable<IProduct[]> {
+    return this._http
+      .get<IBaseResponsive>(`https://dummyjson.com/products/category/${category}`)
+      .pipe(map(data => data.products));
+  }
+
   addToCart(product: IProduct) {
-    this.items.push(product)
-    
-   
-    console.log(this.items)
-    
-
+    this.cartItems.push(product);
+    this.updateCartCount();
   }
 
-  getItems() {
-    
-    return this.items
+  updateCartCount() {
+    this.cartCountSource.next(this.cartItems.length);
   }
 
-  getTotalPrice():number{
-let grandtotal=0;
-this.items.map((a:any,index:any)=>{
-  grandtotal+=a.total;
+  getItems(): IProduct[] {
+    return [...this.cartItems];
+  }
+
+  removeItem(product: IProduct) {
+    this.cartItems = this.cartItems.filter(p => p.id !== product.id);
+    this.updateCartCount();
+  }
   
-})
-return grandtotal;
+  getTotalPrice(): number {
+    return this.cartItems.reduce((total, item) => total + (item.price || 0), 0);
   }
-
- 
-
- 
-
-  removeItem(product:any){
-    this.items.map((a:any,index:any)=>{
-      if(product.id===a.id){
-        this.items.splice(index,1)
-      }
-    })
-  }
-
-
-  getProductByCat(category:any): Observable<IProduct[]> {
-
-    return this._http.get<IProduct[]>('c/categories/'+category+'/ ').pipe(map(data => data))
-  }
-
 }
